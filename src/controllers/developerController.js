@@ -1,3 +1,4 @@
+const batchModel = require("../models/batchModel");
 const developerModel = require("../models/developerModel");
 
 const createDeveloper = async function (req, res) {
@@ -20,12 +21,22 @@ const developers = async function (req, res) {
     res.send({ data: developer });
 
   }else{
-    const developer = await developerModel.find(input);
+    const developer = await developerModel.find().populate('batch');
     res.send({ data: developer });
   }
+ 
+};
+
+const test = async function (req, res) {
+//   const input = req.query;
+ 
+    const developer = await developerModel.find().populate('batch');
+    res.send({ data: developer });
+  
  
 };
 
 module.exports.createDeveloper = createDeveloper;
 module.exports.scholarshipDevelopers = scholarshipDevelopers;
 module.exports.developers = developers;
+module.exports.test = test;

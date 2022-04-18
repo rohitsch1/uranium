@@ -8,7 +8,7 @@ const developerSchema = new mongoose.Schema(
     enum:["male","female","lgbtq"]},
     percentage:Number,
     batch:{type:ObjectId,
-    ref:'batch'}
+    ref:'mybatch'}
   },
   { timestamps: true }
 );

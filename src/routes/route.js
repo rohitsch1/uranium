@@ -12,6 +12,7 @@ router.post("/branchCreate", batchController.createBranch )
 router.post("/createDeveloper", developerController.createDeveloper )
 router.get("/scholarship", developerController.scholarshipDevelopers )
 router.get("/developers", developerController.developers )
+router.get("/test", developerController.test )
 
 // router.post('/createPublisher', publisherController.createPublisher)
 
