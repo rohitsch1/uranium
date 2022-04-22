@@ -4,7 +4,7 @@ const userModel = require("../models/userModel");
 
 const createUser = async function (abcd, xyz) {
   //You can name the req, res objects anything.
-  //but the first parameter is always the request 
+  //but the first parameter is always the request
   //the second parameter is always the response
   let data = abcd.body;
   let savedData = await userModel.create(data);
@@ -36,29 +36,36 @@ const loginUser = async function (req, res) {
       batch: "Uranium",
       organisation: "FunctionUp",
     },
-    "functionup-uranium"  //this is secrate key
+    "functionup-uranium" //this is secrate key
   );
   res.setHeader("x-auth-token", token);
-  
+
   res.send({ status: true, data: token });
 };
 
 const getUserData = async function (req, res) {
-  
-
   let userId = req.params.userId;
+  let message = req.body.message;
+
+  
   let userDetails = await userModel.findById(userId);
+  let posting = userDetails.post
+  posting.push(message);
+
   if (!userDetails)
     return res.send({ status: false, msg: "No such user exists" });
 
   res.send({ status: true, data: userDetails });
 };
 
+//3rd
 const updateUser = async function (req, res) {
-// Do the same steps here:
-// Check if the token is present
-// Check if the token present is a valid token
-// Return a different error message in both these cases
+  // Do the same steps here:
+  // Check if the token is present
+  // Check if the token present is a valid token
+  // Return a different error message in both these cases
+
+  // user ne id bheji he vo
 
   let userId = req.params.userId;
   let user = await userModel.findById(userId);
@@ -68,22 +75,26 @@ const updateUser = async function (req, res) {
   }
 
   let userData = req.body;
-  let updatedUser = await userModel.findOneAndUpdate({ _id: userId }, userData);
+  let updatedUser = await userModel.findOneAndUpdate(
+    { _id: userId },
+    userData,
+    { new: true }
+  );
   res.send({ status: "updatedUser", data: updatedUser });
 };
 
-
 //update key isDeleted to true
-const deleteData = async function(req,res){
-  let  userId = req.params.userId
-  let getData = req.body
+const deleteData = async function (req, res) {
+  let userId = req.params.userId;
+  let getData = req.body;
   console.log(getData);
-  let updateKey = await userModel.findOneAndUpdate({_id : userId}, getData)  // getData gives me object Id
-  res.send({status : "updatedKey" , msg : updateKey})
-}
+  let updateKey = await userModel.findOneAndUpdate({ _id: userId }, getData); // getData gives me object Id
+  res.send({ status: "updatedKey", msg: updateKey });
+};
 
-module.exports.createUser = createUser;
-module.exports.getUserData = getUserData;
-module.exports.updateUser = updateUser;
-module.exports.loginUser = loginUser;
-module.exports.deleteData = deleteData;
+// module.exports.createUser = createUser;
+// module.exports.getUserData = getUserData;
+// module.exports.updateUser = updateUser;
+// module.exports.loginUser = loginUser;
+// module.exports.deleteData = deleteData;
+module.exports = { createUser, getUserData, updateUser, loginUser, deleteData };
