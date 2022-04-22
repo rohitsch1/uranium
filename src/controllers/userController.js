@@ -17,6 +17,7 @@ const loginUser = async function (req, res) {
   let password = req.body.password;
 
   let user = await userModel.findOne({ emailId: userName, password: password });
+  console.log(user);
   if (!user)
     return res.send({
       status: false,
@@ -76,7 +77,8 @@ const updateUser = async function (req, res) {
 const deleteData = async function(req,res){
   let  userId = req.params.userId
   let getData = req.body
-  let updateKey = await userModel.findOneAndUpdate({_id : userId}, getData)
+  console.log(getData);
+  let updateKey = await userModel.findOneAndUpdate({_id : userId}, getData)  // getData gives me object Id
   res.send({status : "updatedKey" , msg : updateKey})
 }
 
