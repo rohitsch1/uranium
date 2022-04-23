@@ -1,28 +1,37 @@
+//@ts-check
 const jwt = require("jsonwebtoken");
 const { authmid } = require("../middlewares/auth");
 const userModel = require("../models/userModel");
 
 const createUser = async function (abcd, xyz) {
-  //You can name the req, res objects anything.
-  //but the first parameter is always the request
-  //the second parameter is always the response
-  let data = abcd.body;
-  let savedData = await userModel.create(data);
-  console.log(abcd.newAtribute);
-  xyz.send({ msg: savedData });
+  try{
+    let data = abcd.body;
+    if(Object.keys(data).length == 0) return xyz.status(400).send({status: false, msg: 'User details is required to create account'})
+    let savedData = await userModel.create(data);
+    console.log(abcd.newAtribute);
+     xyz.status(201).send({ msg: savedData });
+  } catch(err){
+    xyz.status(500).send({status: false, msg: err.message})
+    }
+
+  
 };
 
 const loginUser = async function (req, res) {
+  try{
   let userName = req.body.emailId;
   let password = req.body.password;
 
   let user = await userModel.findOne({ emailId: userName, password: password });
+  
   console.log(user);
+  
   if (!user)
-    return res.send({
+    return res.status(401).send({
       status: false,
       msg: "username or the password is not corerct",
     });
+ 
 
   // Once the login is successful, create the jwt token with sign function
   // Sign function has 2 inputs:
@@ -40,10 +49,16 @@ const loginUser = async function (req, res) {
   );
   res.setHeader("x-auth-token", token);
 
-  res.send({ status: true, data: token });
-};
+  res.status(201).send({ status: true, data: token });
+} catch(error){
+  res.status(500).send({status: false, msg: res.message})
+}};
+
+
+//get userData
 
 const getUserData = async function (req, res) {
+  try{
   let userId = req.params.userId;
   let message = req.body.message;
 
@@ -53,20 +68,25 @@ const getUserData = async function (req, res) {
   posting.push(message);
 
   if (!userDetails)
-    return res.send({ status: false, msg: "No such user exists" });
+    return res.status(400).send({ status: false, msg: "No such user exists" });
 
-  res.send({ status: true, data: userDetails });
-};
+  res.status(200).send({ status: true, data: userDetails });
+}catch(error){
+  res.status(500).send({status: false, msg: res.message})
+}}
+
+
 
 //3rd
 const updateUser = async function (req, res) {
+  //comments
   // Do the same steps here:
   // Check if the token is present
   // Check if the token present is a valid token
   // Return a different error message in both these cases
 
   // user ne id bheji he vo
-
+try{
   let userId = req.params.userId;
   let user = await userModel.findById(userId);
   //Return an error if no user with the given id exists in the db
@@ -80,16 +100,23 @@ const updateUser = async function (req, res) {
     userData,
     { new: true }
   );
-  res.send({ status: "updatedUser", data: updatedUser });
+  res.status(200).send({ status: "updatedUser", data: updatedUser });
+}catch(error){
+  res.status(500).send({status: false, msg: res.message})
+}
 };
 
 //update key isDeleted to true
 const deleteData = async function (req, res) {
+  try{
   let userId = req.params.userId;
   let getData = req.body;
   console.log(getData);
   let updateKey = await userModel.findOneAndUpdate({ _id: userId }, getData); // getData gives me object Id
-  res.send({ status: "updatedKey", msg: updateKey });
+  res.status(200).send({ status: "updatedKey", msg: updateKey });
+  }catch{
+    res.status(500).send({status: false, msg: res.message})
+  }
 };
 
 // module.exports.createUser = createUser;
