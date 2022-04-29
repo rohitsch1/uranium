@@ -1,12 +1,14 @@
 const mongoose = require('mongoose');
 
-const batchSchema = new mongoose.Schema( {
+const batchSchema = new mongoose.Schema({
     name: String,
-    size:Number,
-    program:{type:String,
-    enum:["backend","frontend"]}
-    
+    size: Number,
+    program: {
+        type: String,
+        enum: ["backend", "frontend"]
+    }
+
 
 }, { timestamps: true });
 
-module.exports = mongoose.model('mybatch', batchSchema)
+module.exports = mongoose.model('batch', batchSchema)
